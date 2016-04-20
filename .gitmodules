@@ -16,3 +16,9 @@
 [submodule "deps/io-streams-haproxy"]
 	path = deps/io-streams-haproxy
 	url = https://github.com/snapframework/io-streams-haproxy.git
+[submodule "deps/openssl-streams"]
+	path = deps/openssl-streams
+	url = https://github.com/snapframework/openssl-streams.git
+[submodule "openssl-streams"]
+	path = openssl-streams
+	url = https://github.com/snapframework/openssl-streams.git

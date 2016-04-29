@@ -6,7 +6,7 @@
 	url = https://github.com/snapframework/snap-core.git
 [submodule "deps/snap-server"]
 	path = deps/snap-server
-	url = https://github.com/snapframework/snap-server.git
+	url = https://github.com/imalsogreg/snap-server.git
 [submodule "deps/xmlhtml"]
 	path = deps/xmlhtml
 	url = https://github.com/snapframework/xmlhtml.git

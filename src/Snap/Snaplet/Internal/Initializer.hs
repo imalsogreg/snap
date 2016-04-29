@@ -58,9 +58,11 @@ import           Prelude                      (Bool (..), Either (..), Eq (..),
                                                map, not, show, ($), ($!), (++),
                                                (.))
 import           Snap.Core                    (Snap, liftSnap, route)
-import           Snap.Http.Server             (Config, completeConfig,
-                                               getCompression, getErrorHandler,
-                                               getOther, getVerbose, httpServe)
+-- import           Snap.Http.Server             (Config, completeConfig,
+--                                                getCompression, getErrorHandler,
+--                                                getOther, getVerbose, httpServe)
+import           Snap.Http.Server
+import           Snap.Http.Server.CmdlineConfig (CmdlineConfig, cmdlineConfig, getOther, getVerbose,getCompression, getErrorHandler)
 import           Snap.Util.GZip               (withCompression)
 import           System.Directory             (copyFile,
                                                createDirectoryIfMissing,
@@ -601,9 +603,9 @@ runSnaplet env (SnapletInit b) = do
 -- | Given a configuration and a snap handler, complete it and produce the
 -- completed configuration as well as a new toplevel handler with things like
 -- compression and a 500 handler set up.
-combineConfig :: Config Snap a -> Snap () -> IO (Config Snap a, Snap ())
+combineConfig :: CmdlineConfig Snap a -> Snap () -> IO (CmdlineConfig Snap a, Snap ())
 combineConfig config handler = do
-    conf <- completeConfig config
+    conf <- cmdlineConfig config
 
     let catch500 = (flip catch $ fromJust $ getErrorHandler conf)
     let compress = if fromJust (getCompression conf)
@@ -617,7 +619,7 @@ combineConfig config handler = do
 -- | Initialize and run a Snaplet. This function parses command-line arguments,
 -- runs the given Snaplet initializer, and starts an HTTP server running the
 -- Snaplet's toplevel 'Handler'.
-serveSnaplet :: Config Snap AppConfig
+serveSnaplet :: CmdlineConfig Snap AppConfig
                  -- ^ The configuration of the server - you can usually pass a
                  -- default 'Config' via
                  -- 'Snap.Http.Server.Config.defaultConfig'.
@@ -630,7 +632,7 @@ serveSnaplet startConfig initializer = do
 
 ------------------------------------------------------------------------------
 -- | Like 'serveSnaplet', but don't try to parse command-line arguments.
-serveSnapletNoArgParsing :: Config Snap AppConfig
+serveSnapletNoArgParsing :: CmdlineConfig Snap AppConfig
                  -- ^ The configuration of the server - you can usually pass a
                  -- default 'Config' via
                  -- 'Snap.Http.Server.Config.defaultConfig'.

@@ -23,9 +23,9 @@ import Data.Monoid                      (Monoid, mappend, mempty)
 import System.Console.GetOpt            (OptDescr(Option), ArgDescr(ReqArg))
 ------------------------------------------------------------------------------
 import Snap.Core
-import Snap.Http.Server.Config -- (Config, fmapOpt, setOther, getOther, optDescrs
-                               -- ,extendedCommandLineConfig)
-import Snap.Http.Server.CmdlineConfig
+import Snap.Http.Server.Config (Config, fmapOpt, setOther, getOther, optDescrs
+                               ,extendedCommandLineConfig)
+-- import Snap.Http.Server.CmdlineConfig
 
 
 ------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ instance Monoid AppConfig where
 
 ------------------------------------------------------------------------------
 -- | Command line options for snaplet applications.
-appOpts :: AppConfig -> [OptDescr (Maybe (CmdlineConfig m AppConfig))]
+-- appOpts :: AppConfig -> [OptDescr (Maybe (CmdlineConfig m AppConfig))]
 appOpts defaults = map (fmapOpt $ fmap (flip setOther mempty))
     [ Option ['e'] ["environment"]
              (ReqArg setter "ENVIRONMENT")
@@ -77,10 +77,12 @@ appOpts defaults = map (fmapOpt $ fmap (flip setOther mempty))
 -- | Calls snap-server's extendedCommandLineConfig to add snaplet options to
 -- the built-in server command line options.
 commandLineAppConfig :: MonadSnap m
-                     => CmdlineConfig m AppConfig
-                     -> IO (CmdlineConfig m AppConfig)
+--                      => CmdlineConfig m AppConfig
+                     => Config m AppConfig
+--                      -> IO (CmdlineConfig m AppConfig)
+                     -> IO (Config m AppConfig)
 commandLineAppConfig defaults =
-    extendedCmdlineConfig (appOpts appDefaults ++ optDescrs defaults)
+    extendedCommandLineConfig (appOpts appDefaults ++ optDescrs defaults)
                               mappend defaults
   where
     appDefaults = fromMaybe mempty $ getOther defaults

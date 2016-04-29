@@ -16,6 +16,7 @@ import Snap.Core
 import Snap.Http.Server.Config
 import Snap.Snaplet
 import Snap.Snaplet.Config
+import Snap.Http.Server.CmdlineConfig
 import Snap.Snaplet.Heist
 import Snap.Snaplet.Test.Common.App
 import Snap.Snaplet.Internal.Initializer
@@ -80,13 +81,13 @@ verTypeable =
 ------------------------------------------------------------------------------
 appConfigGetsToConfig :: Assertion
 appConfigGetsToConfig = do
-  opts <- completeConfig =<<
-          commandLineAppConfig defaultConfig  :: IO (Config Snap AppConfig)
+  opts <- cmdlineConfig =<<
+          commandLineAppConfig defaultCmdlineConfig  :: IO (CmdlineConfig Snap AppConfig)
   a    <- async . withArgs ["-p", "8001","-e","otherEnv"] $
           serveSnaplet opts appInit
   threadDelay 500000
   cancel a
-  b    <- async . withArgs ["--environment","devel"] $ serveSnaplet defaultConfig appInit
+  b    <- async . withArgs ["--environment","devel"] $ serveSnaplet defaultCmdlineConfig appInit
   threadDelay 500000
   cancel b
   --TODO - Don't just run the server to touch the config code. Check some values

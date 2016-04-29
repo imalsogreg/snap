@@ -13,9 +13,10 @@ import           System.IO
 
 ------------------------------------------------------------------------------
 import qualified Blackbox.Tests
-import           Prelude                            (Bool (False), IO, Int, Maybe (Nothing), Monad (..), Num (..), flip, return, ($), (.), (^))
-import           Snap.Http.Server                   (simpleHttpServe)
+import           Prelude                            (Bool (False), IO, Int, Maybe (Nothing), Monad (..), Num (..), flip, return, undefined, ($), (.), (^))
+import           Snap.Http.Server
 import           Snap.Http.Server.Config
+import           Snap.Http.Server.CmdlineConfig
 import           Snap.Snaplet
 import qualified Snap.Snaplet.Auth.Tests
 import qualified Snap.Snaplet.Config.Tests
@@ -87,7 +88,7 @@ startServer = do
     mvar <- newEmptyMVar
     t    <- forkIOWithUnmask $ \restore ->
             serve restore mvar (setPort 9753 .
-                                setBind "127.0.0.1" $ defaultConfig) appInit
+                                setBind "127.0.0.1" $ defaultCmdlineConfig) appInit
     threadDelay $ 2*10^(6::Int)
     return (t, mvar)
 
@@ -102,4 +103,4 @@ startServer = do
                     (\(_, handler, _  ) -> do
                          (conf, site) <- combineConfig config handler
                          hPutStrLn stderr "bringing up server"
-                         simpleHttpServe conf site)
+                         simpleHttpServe emptyServerConfig conf site)
